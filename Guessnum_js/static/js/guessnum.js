@@ -1,3 +1,6 @@
+let display = document.getElementById("display");
+let calculation = "";
+
 function chooseDifficulty() {
   let selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
 
@@ -10,9 +13,9 @@ function chooseDifficulty() {
 
   let difficultyIndicator = document.getElementById("difficulty_indicator");
   if (difficultyIndicator.style.display === "block") {
-    difficultyIndicator.style.display = "none"; // Показати блок
+    difficultyIndicator.style.display = "none"; // Приховати блок
   } else {
-    difficultyIndicator.style.display = "block"; // Приховати блок
+    difficultyIndicator.style.display = "block"; // Показати блок
   }
   difficultyIndicator.innerHTML = "Поточна складність гри: " + difficulty;
 
@@ -29,12 +32,32 @@ function chooseDifficulty() {
 
   let chooseDifficulty_ = document.getElementById("choose_difficulty");
   if (chooseDifficulty_.style.display === "block") {
-    chooseDifficulty_.style.display = "none"; // Показати блок
+    chooseDifficulty_.style.display = "none"; // Приховати блок
   } else {
-    chooseDifficulty_.style.display = "block"; // Приховати блок
+    chooseDifficulty_.style.display = "block"; // Показати блок
+  }
+
+  let playBody = document.getElementById("play_body");
+  if (playBody.style.display === "block") {
+    chooseDifficulty_.style.display = "none"; // Приховати блок
+  } else {
+    playBody.style.display = "block"; // Показати блок
   }
 
   return false; // Вибір складності не буде відправлений на сервер
+}
+
+function appendToDisplay(value) {
+  calculation = display.value + value;
+  display.value = calculation;
+}
+
+function clearDisplay() {
+    display.value = "";
+}
+function deleteLast() {
+  calculation = display.value.slice(0, -1); // Видалити останній символ
+  display.value = calculation;
 }
 
 function guessNumber(lang) {

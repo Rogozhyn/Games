@@ -7,6 +7,7 @@
   <link rel="icon" href="https://www.rogozhyn.com.ua/wp-content/uploads/2019/09/cropped-Значек-сайта-2-1-192x192.png" sizes="192x192" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="static/css/main.css">
+  <link rel="stylesheet" href="static/css/simcalc.css">
 
   <title>Гра "Вгадай число"</title>
 </head>
@@ -39,7 +40,7 @@
       </nav>
   </header>
   <main role="main" class="container">
-      <h1 style="margin-top: 100px; text-align: center;">Гра "Вгадай число."</h1>
+      <h1 style="margin-top: 100px; text-align: center;">Гра "Вгадай число"</h1>
 
       <div class="content-section" style="display: block;" id="choose_difficulty">
           <form onsubmit="return chooseDifficulty()" id="level_choosing">
@@ -56,6 +57,28 @@
       </div>
 
       <h1 style="text-align: center; display: none;" id="difficulty_indicator"></h1>
+
+      <div class="content-section" style="display: none;" id="play_body">
+          <div class="calculator">
+              <input type="number" id="display">
+              <button>OK</button><br>
+              <div class="keyboard">
+                  <button class="button_calc number" onclick="appendToDisplay('1')">1</button>
+                  <button class="button_calc number" onclick="appendToDisplay('2')">2</button>
+                  <button class="button_calc number" onclick="appendToDisplay('3')">3</button>
+                  <button class="button_calc number" onclick="appendToDisplay('4')">4</button>
+                  <button class="button_calc number" onclick="appendToDisplay('5')">5</button>
+                  <button class="button_calc number" onclick="appendToDisplay('6')">6</button>
+                  <button class="button_calc number" onclick="appendToDisplay('7')">7</button>
+                  <button class="button_calc number" onclick="appendToDisplay('8')">8</button>
+                  <button class="button_calc number" onclick="appendToDisplay('9')">9</button>
+                  <button class="button_calc operator" onclick="clearDisplay()">C</button>
+                  <button class="button_calc number" onclick="appendToDisplay('0')">0</button>
+                  <button class="button_calc delete" onclick="deleteLast()">⌫</button>
+              </div>
+              <br>
+          </div>
+      </div>
 
 
       

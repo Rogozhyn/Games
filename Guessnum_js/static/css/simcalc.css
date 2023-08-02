@@ -1,0 +1,46 @@
+.calculator {
+  width: 400px;
+  margin: 50px auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+#display {
+  width: 90%;
+  font-size: 35px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.keyboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+}
+
+.button_calc {
+  width: 100%;
+  padding: 3px;
+  font-size: 35px;
+  background-color: #f0f0f0;
+  border: none;
+  cursor: pointer;  /* Змінити курсор на пальчик при наведенні */
+}
+
+.button_calc:hover {
+  background-color: #ccc;
+}
+
+.delete {
+  background-color: #ff0000; /* Червоний фон */
+  color: #ffffff; /* Білий текст */
+}
+
+.delete:hover {
+  background-color: #cc0000; /* Червоний фон при наведенні */
+}
+
+.delete:active {
+  background-color: #990000; /* Червоний фон при натисканні */
+}
