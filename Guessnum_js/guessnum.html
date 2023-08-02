@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html  lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" href="https://www.rogozhyn.com.ua/wp-content/uploads/2019/09/cropped-Значек-сайта-2-1-192x192.png" sizes="192x192" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="static/css/main.css">
+  <link rel="stylesheet" href="static/css/simcalc.css">
+
+  <title>Гра "Вгадай число"</title>
+</head>
+<body>
+  <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+          <div class="container">
+            <a class="navbar-brand mr-4" href="https://www.rogozhyn.com.ua/">Сайт Михайла РОГОЖИНА</a>
+               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+               </button>
+
+            <div class="collapse navbar-collapse" id="navbarToggle">
+
+                <!-- Navbar left Side -->
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="https://www.rogozhyn.com.ua/">Головна</a>
+                    <a class="nav-item nav-link" href="#">Інженерія</a>
+                    <a class="nav-item nav-link" href="#">Програмування</a>
+                </div>
+
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav justify-content-end">
+                    <a class="nav-item nav-link" href="#">Про сайт</a>
+                    <a class="nav-item nav-link" href="#">Контакти</a>
+                </div>
+            </div>
+          </div>
+
+      </nav>
+  </header>
+  <main role="main" class="container">
+      <h1 style="margin-top: 100px; text-align: center;">Гра "Вгадай число"</h1>
+
+      <div class="content-section" style="display: block;" id="choose_difficulty">
+          <form onsubmit="return chooseDifficulty()" id="level_choosing">
+              <p>Оберіть складність гри:</p>
+              <input type="radio" id="level1" name="difficulty" value="Легка">
+              <label for="level1">Легка</label><br>
+              <input type="radio" id="level2" name="difficulty" value="Середня">
+              <label for="level2">Середня</label><br>
+              <input type="radio" id="level3" name="difficulty" value="Складна">
+              <label for="level3">Складна</label>
+              <br><br>
+              <button  type="submit" id="play">Грати</button>
+          </form>
+      </div>
+
+      <h1 style="text-align: center; display: none;" id="difficulty_indicator"></h1>
+
+      <div class="content-section" style="display: none;" id="play_body">
+          <div class="calculator">
+              <input type="number" id="display">
+              <button>OK</button><br>
+              <div class="keyboard">
+                  <button class="button_calc number" onclick="appendToDisplay('1')">1</button>
+                  <button class="button_calc number" onclick="appendToDisplay('2')">2</button>
+                  <button class="button_calc number" onclick="appendToDisplay('3')">3</button>
+                  <button class="button_calc number" onclick="appendToDisplay('4')">4</button>
+                  <button class="button_calc number" onclick="appendToDisplay('5')">5</button>
+                  <button class="button_calc number" onclick="appendToDisplay('6')">6</button>
+                  <button class="button_calc number" onclick="appendToDisplay('7')">7</button>
+                  <button class="button_calc number" onclick="appendToDisplay('8')">8</button>
+                  <button class="button_calc number" onclick="appendToDisplay('9')">9</button>
+                  <button class="button_calc operator" onclick="clearDisplay()">C</button>
+                  <button class="button_calc number" onclick="appendToDisplay('0')">0</button>
+                  <button class="button_calc delete" onclick="deleteLast()">⌫</button>
+              </div>
+              <br>
+          </div>
+      </div>
+
+
+      
+  </main>
+  <footer class="site-footer bg-steel">
+    <div class="bg-steel fixed-bottom">
+        <div class="container">
+            <p class="text-center">ФОП Рогожин М.В., 2019-2023</p>
+        </div>
+    </div>
+  </footer>
+  <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script type='text/javascript' src="static/js/guessnum.js"></script>
+</body>
+</html>
