@@ -120,8 +120,8 @@
       <h1 style="text-align: center; display: none;" id="difficulty_indicator"></h1>
 
       <div class="content-section" style="display: none;" id="play_body">
-            <div class="game_content">
-                <h3 id="game_message">Вкажіть ціле число від 0 до 10</h3>
+            <div class="game_content" style="text-align: center;">
+                <h2 id="game_message">Вкажіть ціле число від 0 до 10</h2>
             </div>
 			<div class="game_content grid-container">
 				<div>Мін</div>
@@ -151,7 +151,10 @@
 			
       </div>
 
-
+      <div class="content-section" style="display: none; text-align: center;" id="end_game">
+        <h2 id="end_game_message"></h2><br>
+        <button class="btn btn-outline-primary" style="cursor: pointer; text-align: center" onclick="new_game()">Грати ще раз!</button><br>
+      </div>
       
   </main>
   <footer class="site-footer bg-steel">
@@ -166,6 +169,6 @@
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  <script type='text/javascript' src="static/js/guessnum.js"></script>
+  <script type='text/javascript' src="static/js/guessnum.js?version=2"></script>
 </body>
 </html>
