@@ -36,6 +36,14 @@
 		text-align: center;
 	}
 
+	.grid-item-display {
+	    height: 45px;
+		border-style: solid;
+		border-width: 1px;
+		border-radius: 4px;
+		background-color: #d0e1e1;
+	}
+
 	.button_calc {
 		width: 100%;
 		padding: 3px;
@@ -112,18 +120,18 @@
       <h1 style="text-align: center; display: none;" id="difficulty_indicator"></h1>
 
       <div class="content-section" style="display: none;" id="play_body">
+            <div class="game_content">
+                <h3 id="game_message">Вкажіть ціле число від 0 до 10</h3>
+            </div>
 			<div class="game_content grid-container">
 				<div>Мін</div>
 				<div>Ваше число:</div>
 				<div>Макс</div>
 				<div class="grid-item" id="min_value">0</div>
-                <div class="grid-item">
-                    <input  type="text" id="userNumberInput" maxlength="4" size="1" style="background-color: #d0e1e1;" readonly>
-                </div>
+                <div class="grid-item grid-item-display" id="userNumberInput"></div>
 				<div class="grid-item" id="max_value">1000</div>
 				<br>
-				<button class="grid-item btn btn-outline-primary"
-						style="cursor: pointer;">OK</button><br>
+				<button class="grid-item btn btn-outline-primary" style="cursor: pointer;" onclick="guessNumber()">ОК</button><br>
 			</div>
 			
 			<div class="game_content keyboard">
