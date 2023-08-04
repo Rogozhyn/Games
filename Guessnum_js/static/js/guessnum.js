@@ -1,5 +1,9 @@
-let display = document.getElementById("display");
-let calculation = "";
+var difficultyBlock = document.getElementById("choose_difficulty");
+var difficultyIndicator = document.getElementById("difficulty_indicator");
+var playBody = document.getElementById("play_body");
+var display = document.getElementById("userNumberInput");
+var difficulty
+var calculation = "";
 
 function chooseDifficulty() {
   let selectedDifficulty = document.querySelector('input[name="difficulty"]:checked');
@@ -9,40 +13,12 @@ function chooseDifficulty() {
     return false;
   }
 
-  let difficulty = selectedDifficulty.value;
-
-  let difficultyIndicator = document.getElementById("difficulty_indicator");
-  if (difficultyIndicator.style.display === "block") {
-    difficultyIndicator.style.display = "none"; // Приховати блок
-  } else {
-    difficultyIndicator.style.display = "block"; // Показати блок
-  }
+  difficulty = selectedDifficulty.value;
   difficultyIndicator.innerHTML = "Поточна складність гри: " + difficulty;
 
-    // Отримати посилання на кнопку за допомогою її ідентифікатора
-  let playButton = document.getElementById("play");
-  // Зробити кнопку неактивною
-  playButton.disabled = true;
-  // Отримати всі радіо-кнопки за допомогою селектора
-  let radioButtons = document.querySelectorAll('input[type="radio"]');
-  // Заборонити змінювати стан радіо-кнопок
-  radioButtons.forEach((radioButton) => {
-    radioButton.disabled = true;
-  });
-
-  let chooseDifficulty_ = document.getElementById("choose_difficulty");
-  if (chooseDifficulty_.style.display === "block") {
-    chooseDifficulty_.style.display = "none"; // Приховати блок
-  } else {
-    chooseDifficulty_.style.display = "block"; // Показати блок
-  }
-
-  let playBody = document.getElementById("play_body");
-  if (playBody.style.display === "block") {
-    chooseDifficulty_.style.display = "none"; // Приховати блок
-  } else {
-    playBody.style.display = "block"; // Показати блок
-  }
+  difficultyBlock.style.display = "none"; // Приховати блок
+  difficultyIndicator.style.display = "block"; // Показати блок
+  playBody.style.display = "block"; // Показати блок
 
   return false; // Вибір складності не буде відправлений на сервер
 }
@@ -55,36 +31,21 @@ function appendToDisplay(value) {
 function clearDisplay() {
     display.value = "";
 }
+
 function deleteLast() {
   calculation = display.value.slice(0, -1); // Видалити останній символ
   display.value = calculation;
 }
 
-function guessNumber(lang) {
-  var userNumberInput = document.getElementById("userNumberInput");
+function guessNumber() {
   var gameResult = document.getElementById("gameResult");
 
-  console.log('Гра "Вгадайте число" ==>');
-  while (true) {
-    var difficulty = prompt(
-      `Оберіть складність гри:\n1 - Легка\n2 - Середня\n3 - Важка\n>>: `
-    );
-
-    console.log("=========================================");
-    if (!["1", "2", "3"].includes(difficulty) || difficulty === "") {
-      console.log(`Ви вибрали неіснуючий пункт меню. Спробуйте ще раз.`);
-      console.log("=========================================");
-      continue;
-    } else {
-      break;
-    }
-  }
-
   var min_ = 0;
-  var max_ = 0;
-  if (difficulty === "1") {
+  var max_;
+  
+  if (difficulty === "Легка") {
     max_ = 10;
-  } else if (difficulty === "2") {
+  } else if (difficulty === "Середня") {
     max_ = 100;
   } else {
     max_ = 1000;
