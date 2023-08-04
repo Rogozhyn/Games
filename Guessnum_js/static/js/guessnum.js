@@ -36,6 +36,7 @@ function chooseDifficulty() {
   display.innerHTML = ""
   stepsCount = 0;
 
+  minValueIndicator.innerHTML = minValue
   maxValueIndicator.innerHTML = maxValue
   difficultyIndicator.innerHTML = "Поточна складність гри: " + difficulty;
   gameMessage.innerHTML = "Вкажіть ціле число від " + minValue + " до " + maxValue
@@ -70,6 +71,10 @@ function deleteLast() {
 function guessNumber() {
     stepsCount += 1;
     var userNumber = parseInt(display.innerHTML);
+    if (userNumber < minValue){
+    userNumber = minValue-1
+    display.innerHTML = userNumber
+    }
 
     if (userNumber === randomNumber){
         if (stepsCount === 1){
