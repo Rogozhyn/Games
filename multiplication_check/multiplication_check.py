@@ -22,7 +22,7 @@ def print_head(length=None):
     clear_screen()
     if not length:
         length = SEPARATOR_LEN
-    print(f"{title:{SEPARATOR}^{length}}")
+    print(f"{title:{SEPARATOR}^{length}}\n")
 
 
 def print_sep(length=None):
@@ -94,20 +94,26 @@ def main():
                 clear_screen(2)
         clear_screen(0.5)
 
-        print_head()
+        def print_message_1():
+            print_head()
+            print_sep()
+            issue = ", ".join(list(map(str, multipliers)))
+            print(f'Перевірка знань таблиці множення на {issue}.')
+            print(f'Всього {qty} прикладів.')
+            print(f'Дозволено {mistakes} помилки.')
+            print_sep()
+            print('Щоб завершити тестування достроково - введіть "0".')
+        print_message_1()
+        pause()
+        print_message_1()
         print_sep()
-        issue = ", ".join(list(map(str, multipliers)))
-        print(f'Перевірка знань таблиці множення на {issue}.')
-        print(f'Всього {qty} прикладів.')
-        print(f'Дозволено {mistakes} помилки.')
-        print('Щоб завершити тестування достроково - введіть "0".')
-        print_sep()
-        time.sleep(4)
 
         user_mistakes = 0
         numbers = []
         multipliers_work = []
         stop_check = False
+        min_time = None
+        max_time = 0
 
         for number in range(qty):
             if not multipliers_work:
@@ -122,8 +128,12 @@ def main():
                     start_time = time.time()
                     c = int(input())
                     end_time = time.time()
-                    execution_time = end_time - start_time
-                    print(f'\t\t\t\t\t\t({round(execution_time, 1)} сек)')
+                    execution_time = round(end_time - start_time, 1)
+                    if execution_time > max_time:
+                        max_time = execution_time
+                    if not min_time or execution_time < min_time:
+                        min_time = execution_time
+                    print(f'\t\t\t\t\t\t({execution_time} сек)')
                     break
                 except ValueError:
                     print_sep()
@@ -150,10 +160,12 @@ def main():
             print('Тестування перервано достроково.')
         elif user_mistakes == 0:
             print_sep()
-            print("Вітаємо! У Вас нема помилок! Ви відмінник!")
+            print(f"Вітаємо! У Вас нема помилок! Ви відмінник!\n"
+                  f"Найшвидша відповідь - {min_time} сек, а найдовша відповідь - {max_time} сек.")
         elif user_mistakes <= mistakes:
             print_sep()
-            print(f'Ви допустили {user_mistakes} помилок. Але Ви не програли. Вітаємо.')
+            print(f'Ви допустили {user_mistakes} помилок. Але Ви не програли. Вітаємо.!\n'
+                  f'Найшвидша відповідь - {min_time} сек, а найдовша відповідь - {max_time} сек.')
         pause()
         clear_screen()
 
