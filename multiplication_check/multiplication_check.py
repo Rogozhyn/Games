@@ -4,10 +4,10 @@ import time
 from datetime import datetime
 import secrets
 
-SEPARATOR_LEN = 60
+SEPARATOR_LEN = 70
 SEPARATOR = "-"
 GAME_NAME = 'Перевірка таблиці множення'
-GAME_VER = 'v0.3'
+GAME_VER = 'v0.4'
 
 
 def clear_screen(timeout=0):
@@ -18,22 +18,28 @@ def clear_screen(timeout=0):
         os.system('cls')
 
 
-def print_head(length=None):
+def print_head(length=None, pr2file=False):
     title = GAME_NAME + ' ' + GAME_VER
     clear_screen()
     if not length:
         length = SEPARATOR_LEN
     title_text = f"{title:{SEPARATOR}^{length}}\n"
-    print(title_text)
-    return title_text
+    if pr2file:
+        return title_text
+    else:
+        print(title_text)
+    
 
 
-def print_sep(length=None):
+def print_sep(length=None, pr2file=False):
     if not length:
         length = SEPARATOR_LEN
     text = SEPARATOR * length
-    print(text)
-    return text
+    if pr2file:
+        return text
+    else:
+        print(text)
+    
 
 
 def pause(length=None):
@@ -98,15 +104,18 @@ def ask_quit():
             clear_screen(2)
 
 
-def print_message_1(in_multipliers, in_qty, in_mistakes):
-    print_head()
-    print_sep()
+def print_message_1(in_multipliers, in_qty, in_mistakes, pr2file=False):
     issue = ", ".join(list(map(str, in_multipliers)))
     message = f'Перевірка знань таблиці множення на {issue}.\nВсього {in_qty} прикладів.\nДозволено {in_mistakes} помилки.'
-    print(message)
-    print_sep()
-    print('Щоб завершити тестування достроково - введіть "0".')
-    return message
+    if pr2file:
+        return message
+    else:
+        print_head()
+        print_sep()
+        print(message)
+        print_sep()
+        print('Щоб завершити тестування достроково - введіть "0".')
+    
 
 
 def run_checking(in_multipliers, in_qty, in_mistakes):
@@ -226,9 +235,9 @@ def main():
 
     while True:
         logfile = open(get_file_name(), "w")
-        print(print_head(), file=logfile)
+        print(print_head(pr2file=True), file=logfile)
         print(f"Дата: {get_current_time('date')}\nЧас: {get_current_time('time')}", file=logfile)
-        print(print_sep() + '\n', file=logfile)
+        print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
 
         multipliers = ask_multipliers()
         clear_screen(0.5)
@@ -243,14 +252,17 @@ def main():
         pause()
         print_message_1(multipliers, qty, mistakes)
         print_sep()
-        print(print_message_1(multipliers, qty, mistakes), file=logfile)
-        print('\n' + print_sep(), file=logfile)
+        print()
+        
+        print(print_message_1(multipliers, qty, mistakes, pr2file=True), file=logfile)
+        print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
 
         result = run_checking(multipliers, qty, mistakes)
         for row in result['logging']:
             print(' | '.join(row), file=logfile)
-        print('\n' + print_sep(), file=logfile)
-        print('\n' + result["message"], file=logfile)
+        print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
+        print(result["message"], file=logfile)
+        print('\n' + print_sep(pr2file=True), file=logfile)
 
         pause()
         clear_screen()
