@@ -258,15 +258,16 @@ def main():
         print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
 
         result = run_checking(multipliers, qty, mistakes)
+
         for row in result['logging']:
             print(' | '.join(row), file=logfile)
         print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
         print(result["message"], file=logfile)
         print('\n' + print_sep(pr2file=True), file=logfile)
+        logfile.close()
 
         pause()
         clear_screen()
-        logfile.close()
 
         if ask_quit() == '0':
             break
