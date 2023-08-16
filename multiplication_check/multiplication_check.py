@@ -7,7 +7,7 @@ import secrets
 SEPARATOR_LEN = 70
 SEPARATOR = "-"
 GAME_NAME = 'Перевірка таблиці множення'
-GAME_VER = 'v0.4'
+GAME_VER = 'v0.5'
 
 
 def clear_screen(timeout=0):
@@ -16,6 +16,39 @@ def clear_screen(timeout=0):
         os.system('clear')
     else:
         os.system('cls')
+
+
+def get_current_time(*args):
+    cur_date = datetime.now().date()
+    cur_time = datetime.now().time()
+    if 'date' in args and 'time' not in args:
+        return str(cur_date)
+    elif 'time' in args and 'date' not in args:
+        return f"{str(cur_time.hour):0>2}:{str(cur_time.minute):0>2}"
+    elif 'date' in args and 'time' in args:
+        return f"{str(cur_date)} {str(cur_time.hour):0>2}:{str(cur_time.minute):0>2}"
+    else:
+        return str(cur_date) + "_" + f"{str(cur_time.hour):0>2}" + f"{str(cur_time.minute):0>2}"
+
+
+def get_file_name():
+    current_path = os.getcwd()
+    folder_path = os.path.join(current_path, 'Results')
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    return os.path.join(folder_path, ("Result_" + get_current_time() + ".txt"))
+
+
+def goodbye():
+    print("До зустрічі!")
+    time.sleep(0.5)
+    print("...")
+    time.sleep(0.4)
+    print("..")
+    time.sleep(0.3)
+    print(".")
+    time.sleep(0.2)
+    exit()
 
 
 def print_head(length=None, pr2file=False):
@@ -28,7 +61,6 @@ def print_head(length=None, pr2file=False):
         return title_text
     else:
         print(title_text)
-    
 
 
 def print_sep(length=None, pr2file=False):
@@ -39,7 +71,19 @@ def print_sep(length=None, pr2file=False):
         return text
     else:
         print(text)
-    
+
+
+def print_message_1(in_multipliers, in_qty, in_mistakes, pr2file=False):
+    issue = ", ".join(list(map(str, in_multipliers)))
+    message = f'Перевірка знань таблиці множення на {issue}.\nВсього {in_qty} прикладів.\nДозволено {in_mistakes} помилки.'
+    if pr2file:
+        return message
+    else:
+        print_head()
+        print_sep()
+        print(message)
+        print_sep()
+        print('Щоб завершити тестування достроково - введіть "0".')
 
 
 def pause(length=None):
@@ -104,20 +148,6 @@ def ask_quit():
             clear_screen(2)
 
 
-def print_message_1(in_multipliers, in_qty, in_mistakes, pr2file=False):
-    issue = ", ".join(list(map(str, in_multipliers)))
-    message = f'Перевірка знань таблиці множення на {issue}.\nВсього {in_qty} прикладів.\nДозволено {in_mistakes} помилки.'
-    if pr2file:
-        return message
-    else:
-        print_head()
-        print_sep()
-        print(message)
-        print_sep()
-        print('Щоб завершити тестування достроково - введіть "0".')
-    
-
-
 def run_checking(in_multipliers, in_qty, in_mistakes):
     user_mistakes = 0
     numbers = []
@@ -143,7 +173,7 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
                 start_time = time.time()
                 c = int(input())
                 end_time = time.time()
-                result_logging[-1].append(f'{statement+str(c):<20}')
+                result_logging[-1].append(f'{statement + str(c):<20}')
                 execution_time = round(end_time - start_time, 1)
                 result_logging[-1].append(f"{str(execution_time) + ' сек':>10}")
                 if execution_time > max_time:
@@ -171,11 +201,13 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
             time.sleep(3)
         multipliers_work.remove(a)
         numbers.remove(b)
+        clear_screen(0.5)
 
         if user_mistakes > in_mistakes:
             break
 
     if stop_check:
+        clear_screen()
         print_sep()
         message_3 = 'Тестування перервано достроково.'
         print(message_3)
@@ -194,39 +226,6 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
         print(message_3)
 
     return {"logging": result_logging, "message": message_3}
-
-
-def get_current_time(*args):
-    cur_date = datetime.now().date()
-    cur_time = datetime.now().time()
-    if 'date' in args and 'time' not in args:
-        return str(cur_date)
-    elif 'time' in args and 'date' not in args:
-        return f"{str(cur_time.hour):0>2}:{str(cur_time.minute):0>2}"
-    elif 'date' in args and 'time' in args:
-        return f"{str(cur_date)} {str(cur_time.hour):0>2}:{str(cur_time.minute):0>2}"
-    else:
-        return str(cur_date) + "_" + f"{str(cur_time.hour):0>2}" + f"{str(cur_time.minute):0>2}"
-
-
-def get_file_name():
-    current_path = os.getcwd()
-    folder_path = os.path.join(current_path, 'Results')
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-    return os.path.join(folder_path, ("Result_" + get_current_time() + ".txt"))
-
-
-def goodbye():
-    print("До зустрічі!")
-    time.sleep(0.5)
-    print("...")
-    time.sleep(0.4)
-    print("..")
-    time.sleep(0.3)
-    print(".")
-    time.sleep(0.2)
-    exit()
 
 
 def main():
@@ -250,22 +249,19 @@ def main():
 
         print_message_1(multipliers, qty, mistakes)
         pause()
-        print_message_1(multipliers, qty, mistakes)
-        print_sep()
-        print()
-        
+        clear_screen()
+
         print(print_message_1(multipliers, qty, mistakes, pr2file=True), file=logfile)
         print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
 
         result = run_checking(multipliers, qty, mistakes)
-
         for row in result['logging']:
             print(' | '.join(row), file=logfile)
         print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
         print(result["message"], file=logfile)
         print('\n' + print_sep(pr2file=True), file=logfile)
-        logfile.close()
 
+        logfile.close()
         pause()
         clear_screen()
 
