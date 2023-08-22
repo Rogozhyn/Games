@@ -179,16 +179,16 @@ def ask_multipliers():
             clear_screen(2)
 
 
-def ask_int(message_main, message_rep):
+def ask_int(message):
     while True:
         try:
             print_head()
             print_sep()
-            print(message_main[LANGUAGE], end='')
+            print(message[LANGUAGE], end='')
             inp_qty = int(input())
             return inp_qty
         except ValueError:
-            print(message_rep[LANGUAGE])
+            print(messages['wrong_int'][LANGUAGE])
             clear_screen(2)
 
 
@@ -302,10 +302,10 @@ def main():
         multipliers = ask_multipliers()
         clear_screen(0.5)
 
-        qty = ask_int(messages['ask_qty'], messages['wrong_int'])
+        qty = ask_int(messages['ask_qty'])
         clear_screen(0.5)
 
-        mistakes = ask_int(messages['ask_mistakes'], messages['wrong_int'])
+        mistakes = ask_int(messages['ask_mistakes'])
         clear_screen(0.5)
 
         print_message_1(multipliers, qty, mistakes)
