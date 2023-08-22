@@ -9,14 +9,10 @@ SEPARATOR_LEN = 70
 SEPARATOR = "-"
 GAME_NAME = {'ua': 'Перевірка таблиці множення',
              'en': 'Checking the multiplication table'}
-GAME_VER = 'v0.5'
+GAME_VER = 'v0.6'
 LANGUAGE = 'ua'
 
 messages = {
-    'ask_language':
-        {'question': 'Виберіть мову / Choose a language:',
-         'answers': {'1': ('українська', 'ua'), '2': ('english', 'en')}
-         },
     'ask_multipliers':
         {'ua': ('Вкажить на які множники треба перевірити таблицю множення\n'
                 '(можна ввести декілька множників, наприклад "2 3"): ',
@@ -35,23 +31,25 @@ messages = {
         {'ua': 'Вкажіть кількість дозволених помилок (наприклад "2"): ',
          'en': 'Specify the number of mistakes allowed (for example "2"): '
          },
+    'ask_quit':
+        {'question':
+             {'ua': 'Повторити?', 'en': 'Repeat?'
+              },
+         'answers':
+             {'1': ({'ua': 'ТАК', 'en': 'YES'}, '1'),
+              '0': ({'ua': 'НІ', 'en': 'NO'}, '0')
+              }
+         },
     'wrong_int':
         {'ua': 'Ви нічого не ввели, або ввели не цифри! Спробуйте ще раз.',
          'en': "You didn't enter anything, or you entered the wrong numbers! Try again."
          },
+    'wrong_choice':
+        {'ua': 'Ви нічого не вказали, або вказали невірне значення. Спробуйте ще раз.',
+         'en': 'You did not specify anything, or you specified an incorrect value. Try again.'},
     'pause':
         {'ua': 'Для продовження натисніть "Enter"',
          'en': 'Press "Enter" to continue'
-         },
-    'ask_quit':
-        {'ua': ('Повторити? ТАК - 1 / НІ - 0: ',
-                'Ви нічого не вказали, або вказали невірне значення. Спробуйте ще раз.'),
-         'en': ('Repeat? YES - 1 / NO - 0: ',
-                'You did not specify anything, or you specified an incorrect value. Try again.')
-         },
-    'goodbye':
-        {'ua': 'До зустрічі!',
-         'en': 'Goodbye!'
          },
     'message_1':
         {'ua': ("f'Перевірка знань таблиці множення на {issue}.'",
@@ -78,6 +76,10 @@ messages = {
                 'f"You made {in_user_mistakes} mistake(s). But you did not lose. Congratulations!"',
                 'f"You lost because you made {in_user_mistakes} mistake(s). And this is more than allowed."',
                 'f"The fastest response is {in_min_time} sec, and the longest response is {in_max_time} sec."')
+         },
+    'goodbye':
+        {'ua': 'До зустрічі!',
+         'en': 'Goodbye!'
          },
     'date':
         {'ua': 'Дата',
@@ -249,19 +251,24 @@ def ask_int(message):
             clear_screen(2)
 
 
-def ask_quit():
-    message = messages['ask_quit'][LANGUAGE]
+def ask_choice(message):
+    question = message['question']
+    answers = message['answers']
     while True:
         print_head()
         print_sep()
-        print(message[0], end='')
-        repeat = input()
-        if repeat == '0' or repeat == '1':
-            clear_screen(0.5)
-            return repeat
+        print(question[LANGUAGE], end='\n\n')
+        for key in answers.keys():
+            print(f'{key:>2}: {answers.get(key)[0][LANGUAGE]}')
+        choice = input("\n>>: ")
+        time.sleep(0.5)
+        if choice in answers.keys():
+            clear_screen()
+            return answers.get(choice)[-1]
         else:
-            print(message[1])
-            clear_screen(2)
+            clear_screen()
+            print(messages['wrong_choice'][LANGUAGE])
+            time.sleep(2)
 
 
 def run_checking(in_multipliers, in_qty, in_mistakes):
@@ -369,7 +376,7 @@ def main():
         pause()
         clear_screen()
 
-        if ask_quit() == '0':
+        if ask_choice(messages['ask_quit']) == '0':
             break
 
     goodbye()
