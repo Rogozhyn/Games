@@ -13,6 +13,10 @@ GAME_VER = 'v0.5'
 LANGUAGE = 'ua'
 
 messages = {
+    'ask_language':
+        {'question': 'Виберіть мову / Choose a language:',
+         'answers': {'1': ('українська', 'ua'), '2': ('english', 'en')}
+         },
     'ask_multipliers':
         {'ua': ('Вкажить на які множники треба перевірити таблицю множення\n'
                 '(можна ввести декілька множників, наприклад "2 3"): ',
@@ -21,27 +25,34 @@ messages = {
          'en': ('Specify which factors to check the multiplication table for\n'
                 '(you can enter several multipliers, for example "2 3"): ',
                 'You have not specified any multiplier. Try again.',
-                'You entered not the numbers! Try again.')},
+                'You entered not the numbers! Try again.')
+         },
     'ask_qty':
         {'ua': 'Вкажіть кількість прикладів для перевірки (наприклад "10"): ',
-         'en': 'Specify the number of examples to check (for example "10"): '},
+         'en': 'Specify the number of examples to check (for example "10"): '
+         },
     'ask_mistakes':
         {'ua': 'Вкажіть кількість дозволених помилок (наприклад "2"): ',
-         'en': 'Specify the number of mistakes allowed (for example "2"): '},
+         'en': 'Specify the number of mistakes allowed (for example "2"): '
+         },
     'wrong_int':
         {'ua': 'Ви нічого не ввели, або ввели не цифри! Спробуйте ще раз.',
-         'en': "You didn't enter anything, or you entered the wrong numbers! Try again."},
+         'en': "You didn't enter anything, or you entered the wrong numbers! Try again."
+         },
     'pause':
         {'ua': 'Для продовження натисніть "Enter"',
-         'en': 'Press "Enter" to continue'},
+         'en': 'Press "Enter" to continue'
+         },
     'ask_quit':
         {'ua': ('Повторити? ТАК - 1 / НІ - 0: ',
                 'Ви нічого не вказали, або вказали невірне значення. Спробуйте ще раз.'),
          'en': ('Repeat? YES - 1 / NO - 0: ',
-                'You did not specify anything, or you specified an incorrect value. Try again.')},
+                'You did not specify anything, or you specified an incorrect value. Try again.')
+         },
     'goodbye':
         {'ua': 'До зустрічі!',
-         'en': 'Goodbye!'},
+         'en': 'Goodbye!'
+         },
     'message_1':
         {'ua': ("f'Перевірка знань таблиці множення на {issue}.'",
                 "f'Всього {in_qty} прикладів.'",
@@ -50,30 +61,36 @@ messages = {
          'en': ("f'Checking knowledge of the multiplication table by {issue}.'",
                 "f'Only {in_qty} examples.'",
                 "f'{in_mistakes} mistakes are allowed.'",
-                'To interrupt testing early - enter "0".')},
+                'To interrupt testing early - enter "0".')
+         },
     'message_2':
         {'ua': "f'Помилка {user_mistakes} з {in_mistakes} дозволених! {a} x {b} = {a * b}'",
-         'en': "f'Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"},
+         'en': "f'Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"
+         },
     'message_3':
         {'ua': ('Тестування перервано достроково.',
                 'Вітаємо! У Вас немає помилок! Ви відмінник!',
-                'f"Ви допустили {user_mistakes} помилок. Але Ви не програли. Вітаємо!"',
-                'f"Ви програли, бо допустили {user_mistakes} помилок. А це більше, ніж дозволено."',
-                'f"Найшвидша відповідь - {min_time} сек, а найдовша відповідь - {max_time} сек."'),
+                'f"Ви допустили {in_user_mistakes} помилок. Але Ви не програли. Вітаємо!"',
+                'f"Ви програли, бо допустили {in_user_mistakes} помилок. А це більше, ніж дозволено."',
+                'f"Найшвидша відповідь - {in_min_time} сек, а найдовша відповідь - {in_max_time} сек."'),
          'en': ('Testing was interrupted prematurely.',
                 'Congratulations! You have no mistakes! You are excellent!',
-                'f"You made {user_mistakes} mistake(s). But you did not lose. Congratulations!"',
-                'f"You lost because you made {user_mistakes} mistake(s). And this is more than allowed."',
-                'f"The fastest response is {min_time} sec, and the longest response is {max_time} sec."')},
+                'f"You made {in_user_mistakes} mistake(s). But you did not lose. Congratulations!"',
+                'f"You lost because you made {in_user_mistakes} mistake(s). And this is more than allowed."',
+                'f"The fastest response is {in_min_time} sec, and the longest response is {in_max_time} sec."')
+         },
     'date':
         {'ua': 'Дата',
-         'en': 'Date'},
+         'en': 'Date'
+         },
     'time':
         {'ua': 'Час',
-         'en': 'Time'},
+         'en': 'Time'
+         },
     'sec':
         {'ua': 'сек',
-         'en': 'sec'},
+         'en': 'sec'
+         },
 }
 
 
@@ -154,11 +171,51 @@ def print_message_1(in_multipliers, in_qty, in_mistakes, pr2file=False):
         print(message[3])
 
 
+def print_message_3(in_stop_check, in_user_mistakes, in_in_mistakes, in_min_time, in_max_time):
+    message_3_combined = messages['message_3'][LANGUAGE]
+    if in_stop_check:
+        clear_screen()
+        print_sep()
+        message = message_3_combined[0]
+        print(message)
+    elif in_user_mistakes == 0:
+        print_sep()
+        message = message_3_combined[1] + '\n' + eval(message_3_combined[4])
+        print(message)
+    elif in_user_mistakes <= in_in_mistakes:
+        print_sep()
+        message = eval(message_3_combined[2]) + '\n' + eval(message_3_combined[4])
+        print(message)
+    else:
+        message = eval(message_3_combined[3])
+        print(message)
+    return message
+
+
 def pause(length=None):
     if not length:
         length = SEPARATOR_LEN
     print_sep(length)
     input(messages['pause'][LANGUAGE])
+
+
+def ask_language():
+    answers = {'1': ('українська', 'ua'), '2': ('english', 'en')}
+    while True:
+        clear_screen()
+        print('Виберіть мову / Choose a language:\n')
+        for key in answers.keys():
+            print(f'{key:>2}: {answers.get(key)[0]}')
+        choice = input("\n>>: ")
+        time.sleep(0.5)
+        if choice in answers.keys():
+            clear_screen()
+            return answers.get(choice)[-1]
+        else:
+            clear_screen()
+            print("Ви вказали не існуючий варіант. Спробуйте ще раз.\n"
+                  "You specified an option that does not exist. Try again.")
+            time.sleep(4)
 
 
 def ask_multipliers():
@@ -260,6 +317,7 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
             print(message_2)
             print_sep()
             time.sleep(3)
+
         multipliers_work.remove(a)
         numbers.remove(b)
         clear_screen(0.5)
@@ -267,28 +325,13 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
         if user_mistakes > in_mistakes:
             break
 
-    message_3_combined = messages['message_3'][LANGUAGE]
-    if stop_check:
-        clear_screen()
-        print_sep()
-        message_3 = message_3_combined[0]
-        print(message_3)
-    elif user_mistakes == 0:
-        print_sep()
-        message_3 = message_3_combined[1] + '\n' + eval(message_3_combined[4])
-        print(message_3)
-    elif user_mistakes <= in_mistakes:
-        print_sep()
-        message_3 = eval(message_3_combined[2]) + '\n' + eval(message_3_combined[4])
-        print(message_3)
-    else:
-        message_3 = eval(message_3_combined[3])
-        print(message_3)
-
+    message_3 = print_message_3(stop_check, user_mistakes, in_mistakes, min_time, max_time)
     return {"logging": result_logging, "message": message_3}
 
 
 def main():
+    global LANGUAGE
+    LANGUAGE = ask_language()
     print_head()
     clear_screen(1)
 
