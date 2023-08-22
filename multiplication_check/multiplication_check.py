@@ -31,6 +31,10 @@ messages = {
         {'ua': 'Вкажіть кількість дозволених помилок (наприклад "2"): ',
          'en': 'Specify the number of mistakes allowed (for example "2"): '
          },
+    'ask_time_limit':
+        {'ua': 'Вкажіть максимально дозволений час на відповідь в секундах (наприклад "15"): ',
+         'en': 'Specify the maximum allowed response time in seconds (for example "15"): '
+         },
     'ask_quit':
         {'question':
              {'ua': 'Повторити?', 'en': 'Repeat?'
@@ -55,10 +59,12 @@ messages = {
         {'ua': ("f'Перевірка знань таблиці множення на {issue}.'",
                 "f'Всього {in_qty} прикладів.'",
                 "f'Дозволено {in_mistakes} помилки.'",
+                "f'Максимально дозволенний час на відповідь {in_time_limit} сек.'",
                 'Щоб завершити тестування достроково - введіть "0".'),
          'en': ("f'Checking knowledge of the multiplication table by {issue}.'",
                 "f'Only {in_qty} examples.'",
                 "f'{in_mistakes} mistakes are allowed.'",
+                "f'The maximum allowed response time {in_time_limit} sec'",
                 'To interrupt testing early - enter "0".')
          },
     'message_2':
@@ -159,10 +165,13 @@ def print_sep(length=None, pr2file=False):
         print(text)
 
 
-def print_message_1(in_multipliers, in_qty, in_mistakes, pr2file=False):
+def print_message_1(in_multipliers, in_qty, in_mistakes, in_time_limit, pr2file=False):
     issue = ", ".join(list(map(str, in_multipliers)))
     message = messages['message_1'][LANGUAGE]
-    composed_message = f'{eval(message[0])}\n{eval(message[1])}\n{eval(message[2])}'
+    composed_message = f'{eval(message[0])}\n' \
+                       f'{eval(message[1])}\n' \
+                       f'{eval(message[2])}\n' \
+                       f'{eval(message[3])}'
     if pr2file:
         return composed_message
     else:
@@ -170,7 +179,7 @@ def print_message_1(in_multipliers, in_qty, in_mistakes, pr2file=False):
         print_sep()
         print(composed_message)
         print_sep()
-        print(message[3])
+        print(message[4])
 
 
 def print_message_3(in_stop_check, in_user_mistakes, in_in_mistakes, in_min_time, in_max_time):
@@ -271,7 +280,7 @@ def ask_choice(message):
             time.sleep(2)
 
 
-def run_checking(in_multipliers, in_qty, in_mistakes):
+def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
     user_mistakes = 0
     numbers = []
     multipliers_work = []
@@ -294,7 +303,24 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
             try:
                 print(statement, end='')
                 start_time = time.time()
-                c = int(input())
+                user_input = [None]
+
+                def get_input():
+                    user_input[0] = input()
+
+                # Створюємо та запускаємо потік для введення
+                input_thread = threading.Thread(target=get_input)
+                input_thread.start()
+
+                # Чекаємо на завершення введення або вичерпання таймауту
+                input_thread.join(in_time_limit)
+
+                if input_thread.is_alive():
+                    print("\nЧас вийшов. Продовжуємо далі.")
+                    c = "?"
+                else:
+                    c = int(user_input[0])
+
                 end_time = time.time()
                 result_logging[-1].append(f'{statement + str(c):<20}')
                 execution_time = round(end_time - start_time, 1)
@@ -316,6 +342,14 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
         if c == 0:
             stop_check = True
             break
+        elif c == "?":
+            user_mistakes += 1
+            print_sep()
+            message_2 = 'Час вичерпано. Натисніть "Enter"'
+            result_logging[-1].append(message_2)
+            print(message_2)
+            print_sep()
+            time.sleep(3)
         elif c != a * b:
             user_mistakes += 1
             print_sep()
@@ -358,14 +392,17 @@ def main():
         mistakes = ask_int(messages['ask_mistakes'])
         clear_screen(0.5)
 
-        print_message_1(multipliers, qty, mistakes)
+        time_limit = ask_int(messages['ask_time_limit'])
+        clear_screen(0.5)
+
+        print_message_1(multipliers, qty, mistakes, time_limit)
         pause()
         clear_screen()
 
-        print(print_message_1(multipliers, qty, mistakes, pr2file=True), file=logfile)
+        print(print_message_1(multipliers, qty, mistakes, time_limit, pr2file=True), file=logfile)
         print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
 
-        result = run_checking(multipliers, qty, mistakes)
+        result = run_checking(multipliers, qty, mistakes, time_limit)
         for row in result['logging']:
             print(' | '.join(row), file=logfile)
         print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
