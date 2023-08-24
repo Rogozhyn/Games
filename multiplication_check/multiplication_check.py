@@ -5,11 +5,12 @@ from datetime import datetime
 import secrets
 import threading
 
+
 SEPARATOR_LEN = 70
 SEPARATOR = "-"
 GAME_NAME = {'ua': 'Перевірка таблиці множення',
              'en': 'Checking the multiplication table'}
-GAME_VER = 'v0.6'
+GAME_VER = 'v0.7'
 LANGUAGE = 'ua'
 
 messages = {
@@ -301,7 +302,7 @@ def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
 
         while True:
             try:
-                print(statement, end='')
+                print(statement, end='', flush=True)
                 start_time = time.time()
                 user_input = [None]
 
@@ -313,15 +314,18 @@ def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
                 input_thread.start()
 
                 # Чекаємо на завершення введення або вичерпання таймауту
-                input_thread.join(in_time_limit)
+                input_thread.join(in_time_limit+0.1)
 
+                end_time = time.time()
                 if input_thread.is_alive():
-                    print("\nЧас вийшов. Продовжуємо далі.")
+                    print('?')
+                    print_sep()
+                    print('Час вийшов. Для продовження натисніть "Enter"')
+                    input_thread.join()
                     c = "?"
                 else:
                     c = int(user_input[0])
 
-                end_time = time.time()
                 result_logging[-1].append(f'{statement + str(c):<20}')
                 execution_time = round(end_time - start_time, 1)
                 execution_time_str = str(execution_time) + ' ' + messages['sec'][LANGUAGE]
@@ -331,7 +335,8 @@ def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
                     max_time = execution_time
                 if not min_time or execution_time < min_time:
                     min_time = execution_time
-                print(f"\t\t\t\t\t\t{execution_time_str}")
+                if c != '?':
+                    print(f"\t\t\t\t\t\t{execution_time_str}")
                 break
             except ValueError:
                 print_sep()
@@ -344,12 +349,8 @@ def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
             break
         elif c == "?":
             user_mistakes += 1
-            print_sep()
-            message_2 = 'Час вичерпано. Натисніть "Enter"'
+            message_2 = 'Час вичерпано. Зараховується помилка.'
             result_logging[-1].append(message_2)
-            print(message_2)
-            print_sep()
-            time.sleep(3)
         elif c != a * b:
             user_mistakes += 1
             print_sep()
@@ -373,8 +374,6 @@ def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
 def main():
     global LANGUAGE
     LANGUAGE = ask_language()
-    print_head()
-    clear_screen(1)
 
     while True:
         logfile = open(get_file_name(), "w")
