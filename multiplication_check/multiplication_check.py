@@ -57,29 +57,29 @@ messages = {
          },
     'message_1':
         {'ua': ("f'Перевірка знань таблиці множення на {issue}.'",
-                "f'Всього {in_qty} прикладів.'",
-                "f'Дозволено {in_mistakes} помилки.'",
+                "f'Всього {in_qty} приклад(ів).'",
+                "f'Дозволено {in_mistakes} помилк(а/и/ок).'",
                 "f'Максимально дозволенний час на відповідь {in_time_limit} сек.'",
                 'Щоб завершити тестування достроково - введіть "0".'),
          'en': ("f'Checking knowledge of the multiplication table by {issue}.'",
-                "f'Only {in_qty} examples.'",
-                "f'{in_mistakes} mistakes are allowed.'",
+                "f'Only {in_qty} example(s).'",
+                "f'{in_mistakes} mistake(s) is/are allowed.'",
                 "f'The maximum allowed response time {in_time_limit} sec'",
                 'To interrupt testing early - enter "0".')
          },
     'message_2a':
-        {'ua': "f'Помилка {user_mistakes} з {in_mistakes} дозволених! {a} x {b} = {a * b}'",
+        {'ua': "f'Помилка {user_mistakes} з {in_mistakes} дозволен(ої/их)! {a} x {b} = {a * b}'",
          'en': "f'Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"
          },
     'message_2b':
-        {'ua': "f'Час вийшов. Помилка {user_mistakes} з {in_mistakes} дозволених! {a} x {b} = {a * b}'",
+        {'ua': "f'Час вийшов. Помилка {user_mistakes} з {in_mistakes} дозволен(ої/их)! {a} x {b} = {a * b}'",
          'en': "f'Time is over. Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"
          },
     'message_3':
         {'ua': ('Тестування перервано достроково.',
                 'Вітаємо! У Вас немає помилок! Ви відмінник!',
-                'f"Ви допустили {in_user_mistakes} помилок. Але Ви не програли. Вітаємо!"',
-                'f"Ви програли, бо допустили {in_user_mistakes} помилок. А це більше, ніж дозволено."',
+                'f"Ви допустили {in_user_mistakes} помил(ку/ки/ок). Але Ви не програли. Вітаємо!"',
+                'f"Ви програли, бо допустили {in_user_mistakes} помил(ку/ки/ок). А це більше, ніж дозволено."',
                 'f"Найшвидша відповідь - {in_min_time} сек, а найдовша відповідь - {in_max_time} сек."'),
          'en': ('Testing was interrupted prematurely.',
                 'Congratulations! You have no mistakes! You are excellent!',
@@ -138,11 +138,13 @@ def get_file_name():
 def goodbye():
     print(messages['goodbye'][LANGUAGE])
     time.sleep(0.5)
-    print("...")
+    print("|-----|")
     time.sleep(0.4)
-    print("..")
+    print(" |---|")
     time.sleep(0.3)
-    print(".")
+    print("  |-|")
+    time.sleep(0.2)
+    print("   |")
     time.sleep(0.2)
     exit()
 
