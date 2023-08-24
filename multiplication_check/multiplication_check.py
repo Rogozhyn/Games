@@ -5,75 +5,104 @@ from datetime import datetime
 import secrets
 import threading
 
-SEPARATOR_LEN = 70
+SEPARATOR_LEN = 80
 SEPARATOR = "-"
-GAME_NAME = {'ua': 'Перевірка таблиці множення',
-             'en': 'Checking the multiplication table'}
-GAME_VER = 'v0.5'
+GAME_NAME = {'ua': 'Перевірка знання таблиці множення',
+             'en': 'Checking knowledge of the multiplication table'}
+GAME_VER = 'v0.8'
 LANGUAGE = 'ua'
 
 messages = {
     'ask_multipliers':
         {'ua': ('Вкажить на які множники треба перевірити таблицю множення\n'
-                '(можна ввести декілька множників, наприклад "2 3"): ',
+                '(можна ввести декілька множників, наприклад "2 3 7"): ',
                 'Ви не вказали жодного множника. Спробуйте ще раз.',
                 'Ви ввели не цифри! Спробуйте ще раз.'),
          'en': ('Specify which factors to check the multiplication table for\n'
-                '(you can enter several multipliers, for example "2 3"): ',
+                '(you can enter several multipliers, for example "2 3 7"): ',
                 'You have not specified any multiplier. Try again.',
-                'You entered not the numbers! Try again.')},
+                'You entered not the numbers! Try again.')
+         },
     'ask_qty':
         {'ua': 'Вкажіть кількість прикладів для перевірки (наприклад "10"): ',
-         'en': 'Specify the number of examples to check (for example "10"): '},
+         'en': 'Specify the number of examples to check (for example "10"): '
+         },
     'ask_mistakes':
         {'ua': 'Вкажіть кількість дозволених помилок (наприклад "2"): ',
-         'en': 'Specify the number of mistakes allowed (for example "2"): '},
+         'en': 'Specify the number of mistakes allowed (for example "2"): '
+         },
+    'ask_time_limit':
+        {'ua': 'Вкажіть максимально дозволений час на відповідь в секундах (наприклад "15"): ',
+         'en': 'Specify the maximum allowed response time in seconds (for example "15"): '
+         },
+    'ask_quit':
+        {'question':
+             {'ua': 'Повторити?', 'en': 'Repeat?'
+              },
+         'answers':
+             {'1': ({'ua': 'ТАК', 'en': 'YES'}, '1'),
+              '0': ({'ua': 'НІ', 'en': 'NO'}, '0')
+              }
+         },
     'wrong_int':
         {'ua': 'Ви нічого не ввели, або ввели не цифри! Спробуйте ще раз.',
-         'en': "You didn't enter anything, or you entered the wrong numbers! Try again."},
+         'en': "You didn't enter anything, or you entered the wrong numbers! Try again."
+         },
+    'wrong_choice':
+        {'ua': 'Ви нічого не вказали, або вказали невірне значення. Спробуйте ще раз.',
+         'en': 'You did not specify anything, or you specified an incorrect value. Try again.'},
     'pause':
         {'ua': 'Для продовження натисніть "Enter"',
-         'en': 'Press "Enter" to continue'},
-    'ask_quit':
-        {'ua': ('Повторити? ТАК - 1 / НІ - 0: ',
-                'Ви нічого не вказали, або вказали невірне значення. Спробуйте ще раз.'),
-         'en': ('Repeat? YES - 1 / NO - 0: ',
-                'You did not specify anything, or you specified an incorrect value. Try again.')},
-    'goodbye':
-        {'ua': 'До зустрічі!',
-         'en': 'Goodbye!'},
+         'en': 'Press "Enter" to continue'
+         },
     'message_1':
         {'ua': ("f'Перевірка знань таблиці множення на {issue}.'",
-                "f'Всього {in_qty} прикладів.'",
-                "f'Дозволено {in_mistakes} помилки.'",
+                "f'Всього {in_qty} приклад(ів).'",
+                "f'Дозволено {in_mistakes} помилк(а/и/ок).'",
+                "f'Максимально дозволенний час на відповідь {in_time_limit} сек.'",
                 'Щоб завершити тестування достроково - введіть "0".'),
          'en': ("f'Checking knowledge of the multiplication table by {issue}.'",
-                "f'Only {in_qty} examples.'",
-                "f'{in_mistakes} mistakes are allowed.'",
-                'To interrupt testing early - enter "0".')},
-    'message_2':
-        {'ua': "f'Помилка {user_mistakes} з {in_mistakes} дозволених! {a} x {b} = {a * b}'",
-         'en': "f'Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"},
+                "f'Only {in_qty} example(s).'",
+                "f'{in_mistakes} mistake(s) is/are allowed.'",
+                "f'The maximum allowed response time {in_time_limit} sec'",
+                'To interrupt testing early - enter "0".')
+         },
+    'message_2a':
+        {'ua': "f'Помилка {user_mistakes} з {in_mistakes} дозволен(ої/их)! {a} x {b} = {a * b}'",
+         'en': "f'Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"
+         },
+    'message_2b':
+        {'ua': "f'Час вийшов. Помилка {user_mistakes} з {in_mistakes} дозволен(ої/их)! {a} x {b} = {a * b}'",
+         'en': "f'Time is over. Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"
+         },
     'message_3':
         {'ua': ('Тестування перервано достроково.',
                 'Вітаємо! У Вас немає помилок! Ви відмінник!',
-                'f"Ви допустили {user_mistakes} помилок. Але Ви не програли. Вітаємо!"',
-                'f"Ви програли, бо допустили {user_mistakes} помилок. А це більше, ніж дозволено."',
-                'f"Найшвидша відповідь - {min_time} сек, а найдовша відповідь - {max_time} сек."'),
+                'f"Ви допустили {in_user_mistakes} помил(ку/ки/ок). Але Ви не програли. Вітаємо!"',
+                'f"Ви програли, бо допустили {in_user_mistakes} помил(ку/ки/ок). А це більше, ніж дозволено."',
+                'f"Найшвидша відповідь - {in_min_time} сек, а найдовша відповідь - {in_max_time} сек."'),
          'en': ('Testing was interrupted prematurely.',
                 'Congratulations! You have no mistakes! You are excellent!',
-                'f"You made {user_mistakes} mistake(s). But you did not lose. Congratulations!"',
-                'f"You lost because you made {user_mistakes} mistake(s). And this is more than allowed."',
-                'f"The fastest response is {min_time} sec, and the longest response is {max_time} sec."')},
+                'f"You made {in_user_mistakes} mistake(s). But you did not lose. Congratulations!"',
+                'f"You lost because you made {in_user_mistakes} mistake(s). And this is more than allowed."',
+                'f"The fastest response is {in_min_time} sec, and the longest response is {in_max_time} sec."')
+         },
+    'goodbye':
+        {'ua': 'До зустрічі!',
+         'en': 'Goodbye!'
+         },
     'date':
         {'ua': 'Дата',
-         'en': 'Date'},
+         'en': 'Date'
+         },
     'time':
         {'ua': 'Час',
-         'en': 'Time'},
+         'en': 'Time'
+         },
     'sec':
         {'ua': 'сек',
-         'en': 'sec'},
+         'en': 'sec'
+         },
 }
 
 
@@ -109,11 +138,13 @@ def get_file_name():
 def goodbye():
     print(messages['goodbye'][LANGUAGE])
     time.sleep(0.5)
-    print("...")
+    print("|-----|")
     time.sleep(0.4)
-    print("..")
+    print(" |---|")
     time.sleep(0.3)
-    print(".")
+    print("  |-|")
+    time.sleep(0.2)
+    print("   |")
     time.sleep(0.2)
     exit()
 
@@ -140,10 +171,13 @@ def print_sep(length=None, pr2file=False):
         print(text)
 
 
-def print_message_1(in_multipliers, in_qty, in_mistakes, pr2file=False):
+def print_message_1(in_multipliers, in_qty, in_mistakes, in_time_limit, pr2file=False):
     issue = ", ".join(list(map(str, in_multipliers)))
     message = messages['message_1'][LANGUAGE]
-    composed_message = f'{eval(message[0])}\n{eval(message[1])}\n{eval(message[2])}'
+    composed_message = f'{eval(message[0])}\n' \
+                       f'{eval(message[1])}\n' \
+                       f'{eval(message[2])}\n' \
+                       f'{eval(message[3])}'
     if pr2file:
         return composed_message
     else:
@@ -151,7 +185,28 @@ def print_message_1(in_multipliers, in_qty, in_mistakes, pr2file=False):
         print_sep()
         print(composed_message)
         print_sep()
-        print(message[3])
+        print(message[4])
+
+
+def print_message_3(in_stop_check, in_user_mistakes, in_in_mistakes, in_min_time, in_max_time):
+    message_3_combined = messages['message_3'][LANGUAGE]
+    if in_stop_check:
+        clear_screen()
+        print_sep()
+        message = message_3_combined[0]
+        print(message)
+    elif in_user_mistakes == 0:
+        print_sep()
+        message = message_3_combined[1] + '\n' + eval(message_3_combined[4])
+        print(message)
+    elif in_user_mistakes <= in_in_mistakes:
+        print_sep()
+        message = eval(message_3_combined[2]) + '\n' + eval(message_3_combined[4])
+        print(message)
+    else:
+        message = eval(message_3_combined[3])
+        print(message)
+    return message
 
 
 def pause(length=None):
@@ -159,6 +214,25 @@ def pause(length=None):
         length = SEPARATOR_LEN
     print_sep(length)
     input(messages['pause'][LANGUAGE])
+
+
+def ask_language():
+    answers = {'1': ('українська', 'ua'), '2': ('english', 'en')}
+    while True:
+        clear_screen()
+        print('Виберіть мову / Choose a language:\n')
+        for key in answers.keys():
+            print(f'{key:>2}: {answers.get(key)[0]}')
+        choice = input("\n>>: ")
+        time.sleep(0.5)
+        if choice in answers.keys():
+            clear_screen()
+            return answers.get(choice)[-1]
+        else:
+            clear_screen()
+            print("Ви вказали не існуючий варіант. Спробуйте ще раз.\n"
+                  "You specified an option that does not exist. Try again.")
+            time.sleep(4)
 
 
 def ask_multipliers():
@@ -179,35 +253,40 @@ def ask_multipliers():
             clear_screen(2)
 
 
-def ask_int(message_main, message_rep):
+def ask_int(message):
     while True:
         try:
             print_head()
             print_sep()
-            print(message_main[LANGUAGE], end='')
+            print(message[LANGUAGE], end='')
             inp_qty = int(input())
             return inp_qty
         except ValueError:
-            print(message_rep[LANGUAGE])
+            print(messages['wrong_int'][LANGUAGE])
             clear_screen(2)
 
 
-def ask_quit():
-    message = messages['ask_quit'][LANGUAGE]
+def ask_choice(message):
+    question = message['question']
+    answers = message['answers']
     while True:
         print_head()
         print_sep()
-        print(message[0], end='')
-        repeat = input()
-        if repeat == '0' or repeat == '1':
-            clear_screen(0.5)
-            return repeat
+        print(question[LANGUAGE], end='\n\n')
+        for key in answers.keys():
+            print(f'{key:>2}: {answers.get(key)[0][LANGUAGE]}')
+        choice = input("\n>>: ")
+        time.sleep(0.5)
+        if choice in answers.keys():
+            clear_screen()
+            return answers.get(choice)[-1]
         else:
-            print(message[1])
-            clear_screen(2)
+            clear_screen()
+            print(messages['wrong_choice'][LANGUAGE])
+            time.sleep(2)
 
 
-def run_checking(in_multipliers, in_qty, in_mistakes):
+def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
     user_mistakes = 0
     numbers = []
     multipliers_work = []
@@ -228,10 +307,33 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
 
         while True:
             try:
-                print(statement, end='')
+                print(statement, end='', flush=True)
                 start_time = time.time()
-                c = int(input())
+                user_input = [None]
+
+                def get_input():
+                    user_input[0] = input()
+
+                # Створюємо та запускаємо потік для введення
+                input_thread = threading.Thread(target=get_input)
+                input_thread.start()
+
+                # Чекаємо на завершення введення або вичерпання таймауту
+                input_thread.join(in_time_limit + 0.1)
+
                 end_time = time.time()
+                if input_thread.is_alive():
+                    print('?')
+                    c = "?"
+                    user_mistakes += 1
+                    print_sep()
+                    message_2b = eval(messages["message_2b"][LANGUAGE])
+                    print(message_2b)
+                    print(f'{messages["pause"][LANGUAGE]}')
+                    input_thread.join()
+                else:
+                    c = int(user_input[0])
+
                 result_logging[-1].append(f'{statement + str(c):<20}')
                 execution_time = round(end_time - start_time, 1)
                 execution_time_str = str(execution_time) + ' ' + messages['sec'][LANGUAGE]
@@ -241,7 +343,8 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
                     max_time = execution_time
                 if not min_time or execution_time < min_time:
                     min_time = execution_time
-                print(f"\t\t\t\t\t\t{execution_time_str}")
+                if c != '?':
+                    print(f"\t\t\t\t\t\t{execution_time_str}")
                 break
             except ValueError:
                 print_sep()
@@ -252,14 +355,18 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
         if c == 0:
             stop_check = True
             break
+        elif c == "?":
+            message_2b = eval(messages["message_2b"][LANGUAGE])
+            result_logging[-1].append(message_2b)
         elif c != a * b:
             user_mistakes += 1
             print_sep()
-            message_2 = eval(messages["message_2"][LANGUAGE])
-            result_logging[-1].append(message_2)
-            print(message_2)
+            message_2a = eval(messages["message_2a"][LANGUAGE])
+            result_logging[-1].append(message_2a)
+            print(message_2a)
             print_sep()
             time.sleep(3)
+
         multipliers_work.remove(a)
         numbers.remove(b)
         clear_screen(0.5)
@@ -267,30 +374,13 @@ def run_checking(in_multipliers, in_qty, in_mistakes):
         if user_mistakes > in_mistakes:
             break
 
-    message_3_combined = messages['message_3'][LANGUAGE]
-    if stop_check:
-        clear_screen()
-        print_sep()
-        message_3 = message_3_combined[0]
-        print(message_3)
-    elif user_mistakes == 0:
-        print_sep()
-        message_3 = message_3_combined[1] + '\n' + eval(message_3_combined[4])
-        print(message_3)
-    elif user_mistakes <= in_mistakes:
-        print_sep()
-        message_3 = eval(message_3_combined[2]) + '\n' + eval(message_3_combined[4])
-        print(message_3)
-    else:
-        message_3 = eval(message_3_combined[3])
-        print(message_3)
-
+    message_3 = print_message_3(stop_check, user_mistakes, in_mistakes, min_time, max_time)
     return {"logging": result_logging, "message": message_3}
 
 
 def main():
-    print_head()
-    clear_screen(1)
+    global LANGUAGE
+    LANGUAGE = ask_language()
 
     while True:
         logfile = open(get_file_name(), "w")
@@ -302,20 +392,23 @@ def main():
         multipliers = ask_multipliers()
         clear_screen(0.5)
 
-        qty = ask_int(messages['ask_qty'], messages['wrong_int'])
+        qty = ask_int(messages['ask_qty'])
         clear_screen(0.5)
 
-        mistakes = ask_int(messages['ask_mistakes'], messages['wrong_int'])
+        mistakes = ask_int(messages['ask_mistakes'])
         clear_screen(0.5)
 
-        print_message_1(multipliers, qty, mistakes)
+        time_limit = ask_int(messages['ask_time_limit'])
+        clear_screen(0.5)
+
+        print_message_1(multipliers, qty, mistakes, time_limit)
         pause()
         clear_screen()
 
-        print(print_message_1(multipliers, qty, mistakes, pr2file=True), file=logfile)
+        print(print_message_1(multipliers, qty, mistakes, time_limit, pr2file=True), file=logfile)
         print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
 
-        result = run_checking(multipliers, qty, mistakes)
+        result = run_checking(multipliers, qty, mistakes, time_limit)
         for row in result['logging']:
             print(' | '.join(row), file=logfile)
         print('\n' + print_sep(pr2file=True) + '\n', file=logfile)
@@ -326,7 +419,7 @@ def main():
         pause()
         clear_screen()
 
-        if ask_quit() == '0':
+        if ask_choice(messages['ask_quit']) == '0':
             break
 
     goodbye()
