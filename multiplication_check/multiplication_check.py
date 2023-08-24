@@ -5,22 +5,21 @@ from datetime import datetime
 import secrets
 import threading
 
-
-SEPARATOR_LEN = 70
+SEPARATOR_LEN = 80
 SEPARATOR = "-"
-GAME_NAME = {'ua': 'Перевірка таблиці множення',
-             'en': 'Checking the multiplication table'}
-GAME_VER = 'v0.7'
+GAME_NAME = {'ua': 'Перевірка знання таблиці множення',
+             'en': 'Checking knowledge of the multiplication table'}
+GAME_VER = 'v0.8'
 LANGUAGE = 'ua'
 
 messages = {
     'ask_multipliers':
         {'ua': ('Вкажить на які множники треба перевірити таблицю множення\n'
-                '(можна ввести декілька множників, наприклад "2 3"): ',
+                '(можна ввести декілька множників, наприклад "2 3 7"): ',
                 'Ви не вказали жодного множника. Спробуйте ще раз.',
                 'Ви ввели не цифри! Спробуйте ще раз.'),
          'en': ('Specify which factors to check the multiplication table for\n'
-                '(you can enter several multipliers, for example "2 3"): ',
+                '(you can enter several multipliers, for example "2 3 7"): ',
                 'You have not specified any multiplier. Try again.',
                 'You entered not the numbers! Try again.')
          },
@@ -68,9 +67,13 @@ messages = {
                 "f'The maximum allowed response time {in_time_limit} sec'",
                 'To interrupt testing early - enter "0".')
          },
-    'message_2':
+    'message_2a':
         {'ua': "f'Помилка {user_mistakes} з {in_mistakes} дозволених! {a} x {b} = {a * b}'",
          'en': "f'Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"
+         },
+    'message_2b':
+        {'ua': "f'Час вийшов. Помилка {user_mistakes} з {in_mistakes} дозволених! {a} x {b} = {a * b}'",
+         'en': "f'Time is over. Mistake {user_mistakes} of {in_mistakes} allowed! {a} x {b} = {a * b}'"
          },
     'message_3':
         {'ua': ('Тестування перервано достроково.',
@@ -314,15 +317,18 @@ def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
                 input_thread.start()
 
                 # Чекаємо на завершення введення або вичерпання таймауту
-                input_thread.join(in_time_limit+0.1)
+                input_thread.join(in_time_limit + 0.1)
 
                 end_time = time.time()
                 if input_thread.is_alive():
                     print('?')
-                    print_sep()
-                    print('Час вийшов. Для продовження натисніть "Enter"')
-                    input_thread.join()
                     c = "?"
+                    user_mistakes += 1
+                    print_sep()
+                    message_2b = eval(messages["message_2b"][LANGUAGE])
+                    print(message_2b)
+                    print(f'{messages["pause"][LANGUAGE]}')
+                    input_thread.join()
                 else:
                     c = int(user_input[0])
 
@@ -348,15 +354,14 @@ def run_checking(in_multipliers, in_qty, in_mistakes, in_time_limit):
             stop_check = True
             break
         elif c == "?":
-            user_mistakes += 1
-            message_2 = 'Час вичерпано. Зараховується помилка.'
-            result_logging[-1].append(message_2)
+            message_2b = eval(messages["message_2b"][LANGUAGE])
+            result_logging[-1].append(message_2b)
         elif c != a * b:
             user_mistakes += 1
             print_sep()
-            message_2 = eval(messages["message_2"][LANGUAGE])
-            result_logging[-1].append(message_2)
-            print(message_2)
+            message_2a = eval(messages["message_2a"][LANGUAGE])
+            result_logging[-1].append(message_2a)
+            print(message_2a)
             print_sep()
             time.sleep(3)
 
